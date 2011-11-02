@@ -76,6 +76,7 @@ if(!class_exists('Post_Type_Converter')) {
 		
 		public static function check_bulk_convert() {
 			global $pagenow;
+			
 			if($pagenow == 'edit.php' && isset($_REQUEST['post'])){
 				if(isset($_REQUEST['change_post_type']) && -1 != $_REQUEST['change_post_type'] ){
 					$new_post_type = $_REQUEST['change_post_type'];
@@ -115,8 +116,14 @@ if(!class_exists('Post_Type_Converter')) {
 		
 		public static function convert_post_type($post, $new_post_type) {
 			if($post->post_type != $new_post_type){
+				$categories = get_the_terms($post->ID, 'category');
+				$cat_array = array();
+				foreach($categories as $cagtegory){
+					$cat_array[] =  $cagtegory->term_id;
+				}
 				$post->post_type = $new_post_type;
-				return wp_update_post($post);
+				$post->post_category = $cat_array;
+				wp_insert_post($post);
 			}
 			return;
 		}
