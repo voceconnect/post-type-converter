@@ -88,16 +88,16 @@ if(!class_exists('Post_Type_Converter')) {
 						$post = get_post($post_id);
 						self::convert_post_type($post, $new_post_type);
 					}
+					
+					$new_url = get_admin_url('', $pagenow);
+				
+					if($_REQUEST['post_type'] != 'post'){
+						$new_url = add_query_arg('post_type', $_REQUEST['post_type'], $new_url);
+					}
+
+					wp_redirect($new_url);
+					exit();
 				}
-				
-				$new_url = get_admin_url('', $pagenow);
-				
-				if($_REQUEST['post_type'] != 'post'){
-					$new_url = add_query_arg('post_type', $_REQUEST['post_type'], $new_url);
-				}
-				
-				wp_redirect($new_url);
-				exit();
 			}
 		}
 		
