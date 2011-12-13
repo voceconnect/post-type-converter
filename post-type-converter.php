@@ -30,7 +30,7 @@ if(!class_exists('Post_Type_Converter')) {
 			$post_types = self::get_post_types();
 			$script_vars = array();
 			foreach($post_types as $post_type){
-				$script_vars[str_replace('-', '_', $post_type)] .= ucwords(str_replace('-', ' ', $post_type));
+				$script_vars[$post_type] = get_post_type_object($post_type)->labels->singular_name;
 			}
 			
 			return $script_vars;
@@ -68,7 +68,7 @@ if(!class_exists('Post_Type_Converter')) {
 			
 			echo '<select id="convert_post_type" name="convert_post_type">';
 			foreach($post_types as $single_post_type){
-				echo '<option value="'.$single_post_type.'"  '.selected($post->post_type, $single_post_type).'>'.ucwords(str_replace('-', ' ', $single_post_type)).'</option>';
+				echo '<option value="'.$single_post_type.'"  '.selected($post->post_type, $single_post_type).'>'.get_post_type_object($post_type)->labels->singular_name.'</option>';
 			}
 			echo '</select>';
 			wp_nonce_field('update_post_type_conversion', 'convert_post_type_nonce');
