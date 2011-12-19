@@ -118,8 +118,10 @@ if(!class_exists('Post_Type_Converter')) {
 			if($post->post_type != $new_post_type){
 				$categories = get_the_terms($post->ID, 'category');
 				$cat_array = array();
-				foreach($categories as $cagtegory){
-					$cat_array[] =  $cagtegory->term_id;
+				if($categories) {
+					foreach($categories as $cagtegory){
+						$cat_array[] =  $cagtegory->term_id;
+					}
 				}
 				$post->post_type = $new_post_type;
 				$post->post_category = $cat_array;
