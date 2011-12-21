@@ -68,7 +68,7 @@ if(!class_exists('Post_Type_Converter')) {
 			
 			echo '<select id="convert_post_type" name="convert_post_type">';
 			foreach($post_types as $single_post_type){
-				echo '<option value="'.$single_post_type.'"  '.selected($post->post_type, $single_post_type).'>'.get_post_type_object($post_type)->labels->singular_name.'</option>';
+				echo '<option value="'.$single_post_type.'"  '.selected($post->post_type, $single_post_type).'>'.get_post_type_object($single_post_type)->labels->singular_name.'</option>';
 			}
 			echo '</select>';
 			wp_nonce_field('update_post_type_conversion', 'convert_post_type_nonce');
