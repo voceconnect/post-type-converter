@@ -1,6 +1,6 @@
 === Post Type Converter ===
 Contributors: kevinlangleyjr
-Donate link: http://ubergeni.us/
+Donate link: http://vocecommunications.com/
 Tags: converter, post type, custom post type, cpt
 Requires at least: 2.8
 Tested up to: 3.3
