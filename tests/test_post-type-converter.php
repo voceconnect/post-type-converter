@@ -147,4 +147,20 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Ensure get_post_types() only returns public post types
+	 */
+	function test_get_post_types_are_public() {
+
+		$public_types = get_post_types( array( 'public' => true ) );
+		$post_types   = Post_Type_Converter::get_post_types();
+
+		foreach ( $post_types as $post_type ) {
+
+			$this->assertArrayHasKey( $post_type, $public_types, "Non-public post type {$post_type} found." );
+
+		}
+
+	}
+
 }
