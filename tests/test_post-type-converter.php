@@ -52,7 +52,37 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Ensure that ...
+	 * Ensure that main hooks are set for "manage_options" users
 	 */
+	function test_hooks_for_manage_options_user() {
+
+		$user = $this->factory->user->create_and_get( array(
+			'role' => 'administrator'
+		) );
+
+		$this->assertTrue( $user->has_cap( 'manage_options' ), 'Administrator role user does not have "manage_options" capability.' );
+
+		wp_set_current_user( $user->ID );
+
+		$this->assertEquals( $user->ID, get_current_user_id(), "User {$user->ID} is not current user." );
+
+		Post_Type_Converter::initialize();
+
+		$hooks = array(
+			'add_meta_boxes'		=> 'add_convert_meta_box',
+			'save_post'				=> 'save_convert',
+			'admin_enqueue_scripts'	=> 'add_bulk_edit_js',
+			'admin_init'			=> 'check_bulk_convert'
+		);
+
+		foreach ( $hooks as $hook => $callback ) {
+
+			$priority = has_action( $hook, array( 'Post_Type_Converter', $callback ) );
+
+			$this->assertGreaterThan( 0, $priority, "Post_Type_Converter::{$callback} not attached to {$hook}." );
+
+		}
+
+	}
 
 }
