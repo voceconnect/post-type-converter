@@ -45,11 +45,9 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 	 */
 	function test_initialize_init_hook() {
 
-		$priority = has_action( 'init', 'Post_Type_Converter::initialize' );
+		$priority = has_action( 'init', array( 'Post_Type_Converter', 'initialize' ) );
 
-//		$this->assertGreaterThan( 0, $priority );
-
-		$this->assertTrue( class_exists( 'Post_Type_Converter' ) );
+		$this->assertGreaterThan( 0, $priority );
 
 	}
 
