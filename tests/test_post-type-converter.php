@@ -52,6 +52,32 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Ensure that main hooks are *not* set when no user logged in
+	 */
+	function test_hooks_for_no_user() {
+
+		$this->assertEquals( 0, get_current_user_id(), "There should not be a current user." );
+
+		Post_Type_Converter::initialize();
+
+		$hooks = array(
+			'add_meta_boxes'        => 'add_convert_meta_box',
+			'save_post'             => 'save_convert',
+			'admin_enqueue_scripts' => 'add_bulk_edit_js',
+			'admin_init'            => 'check_bulk_convert'
+		);
+
+		foreach ( $hooks as $hook => $callback ) {
+
+			$priority = has_action( $hook, array( 'Post_Type_Converter', $callback ) );
+
+			$this->assertFalse( $priority, "Post_Type_Converter::{$callback} attached to {$hook}." );
+
+		}
+
+	}
+
+	/**
 	 * Ensure that main hooks are set for "manage_options" users
 	 */
 	function test_hooks_for_manage_options_user() {
@@ -69,10 +95,10 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 		Post_Type_Converter::initialize();
 
 		$hooks = array(
-			'add_meta_boxes'		=> 'add_convert_meta_box',
-			'save_post'				=> 'save_convert',
-			'admin_enqueue_scripts'	=> 'add_bulk_edit_js',
-			'admin_init'			=> 'check_bulk_convert'
+			'add_meta_boxes'        => 'add_convert_meta_box',
+			'save_post'             => 'save_convert',
+			'admin_enqueue_scripts' => 'add_bulk_edit_js',
+			'admin_init'            => 'check_bulk_convert'
 		);
 
 		foreach ( $hooks as $hook => $callback ) {
