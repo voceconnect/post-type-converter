@@ -163,4 +163,15 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Ensure get_post_types() does not include "attachment" post type
+	 */
+	function test_get_post_types_excludes_attachment() {
+
+		$post_types = Post_Type_Converter::get_post_types();
+
+		$this->assertArrayNotHasKey( 'attachment', $post_types, "Post type 'attachment' found in post types." );
+
+	}
+
 }
