@@ -174,4 +174,17 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Ensure the bulk edit javascript is NOT enqueue on non post edit screens
+	 */
+	function test_bulk_edit_js_not_on_non_post_edit_screens() {
+
+		set_current_screen( 'index.php' );
+
+		Post_Type_Converter::add_bulk_edit_js();
+
+		$this->assertFalse( wp_script_is( 'post-type-converter', 'enqueued' ), 'Bulk edit javascript enqueued on non post edit screen.' );
+
+	}
+
 }
