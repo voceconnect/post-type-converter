@@ -273,7 +273,7 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Test "post" -> "page" in convert workflow
+	 * Test "post" -> "page" in convert workflow, with categories
 	 */
 	function test_convert_post_type_post_to_page() {
 
@@ -281,11 +281,19 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 			'post_type' => 'post'
 		));
 
+		$categories = $this->factory->category->create_many( 5 );
+
+		$this->factory->category->add_post_terms( $post->ID, $categories, 'category', false );
+
 		Post_Type_Converter::convert_post_type( $post, 'page' );
 
 		$post = get_post( $post->ID );
 
 		$this->assertEquals( 'page', $post->post_type, 'Post did not become "page" post_type.' );
+
+		$post_cats = wp_get_post_terms( $post->ID, 'category', array( 'fields' => 'ids' ) );
+
+		$this->assertEquals( $categories, $post_cats, 'Categories did not transfer to "page" post_type.' );
 
 	}
 
