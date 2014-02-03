@@ -192,7 +192,7 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 	 */
 	function test_convert_meta_box_not_on_add_screen() {
 
-		set_current_screen('post-new.php');
+		set_current_screen( 'post-new.php' );
 
 		Post_Type_Converter::add_bulk_edit_js();
 
@@ -210,6 +210,48 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 		Post_Type_Converter::add_bulk_edit_js();
 
 		$this->assertTrue( wp_script_is( 'post-type-converter', 'enqueued' ), 'Bulk edit javascript not enqueued on post edit screen.' );
+
+	}
+
+	/**
+	 * Ensure that the convert type metabox is not registered for the add post screen
+	 *
+	 * @global array $wp_meta_boxes
+	 */
+	function test_convert_meta_box_on_add_post_screen() {
+
+		global $wp_meta_boxes;
+
+		set_current_screen( 'post-new.php' );
+
+		Post_Type_Converter::add_convert_meta_box();
+
+		if ( is_array( $wp_meta_boxes ) ) {
+
+			$this->assertArrayNotHasKey( 'convert-post-type', $wp_meta_boxes['post']['side']['high'], 'Convert Post Type metabox registered on Add Post screen.' );
+
+		} else {
+
+			$this->assertNull( $wp_meta_boxes );
+
+		}
+
+	}
+
+	/**
+	 * Ensure the convert metabox is registered for the edit post screen
+	 *
+	 * @global array $wp_meta_boxes
+	 */
+	function test_convert_meta_box_on_edit_post_screen() {
+
+		global $wp_meta_boxes;
+
+		set_current_screen( 'edit-post.php' );
+
+		Post_Type_Converter::add_convert_meta_box();
+
+		$this->assertArrayHasKey( 'convert-post-type', $wp_meta_boxes['post']['side']['high'], 'Convert Post Type metabox *not* registered on Edit Post screen.' );
 
 	}
 
