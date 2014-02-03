@@ -255,4 +255,21 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Check post -> post in convert work flow
+	 */
+	function test_convert_post_type_same_types() {
+
+		$post = $this->factory->post->create_and_get(array(
+			'post_type' => 'post'
+		));
+
+		Post_Type_Converter::convert_post_type( $post, 'post' );
+
+		$post = get_post( $post->ID );
+
+		$this->assertEquals( 'post', $post->post_type );
+
+	}
+
 }
