@@ -297,4 +297,34 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Ensure save_convert() short circuits on autosaves
+	 */
+	function test_save_convert_autosave() {
+
+		$post     = $this->factory->post->create();
+
+		$autosave = _wp_put_post_revision( $post, true );
+
+		$result   = Post_Type_Converter::save_convert( $autosave );
+
+		$this->assertEquals( $autosave, $result, 'save_convert() should return post_id on autosave.' );
+
+	}
+
+	/**
+	 * Ensure save_convert() short circuits on revisions
+	 */
+	function test_save_convert_revision() {
+
+		$post     = $this->factory->post->create();
+
+		$revision = _wp_put_post_revision( $post );
+
+		$result   = Post_Type_Converter::save_convert( $revision );
+
+		$this->assertEquals( $revision, $result, 'save_convert() should return post_id on revision.' );
+
+	}
+
 }
