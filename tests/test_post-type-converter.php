@@ -268,7 +268,24 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 
 		$post = get_post( $post->ID );
 
-		$this->assertEquals( 'post', $post->post_type );
+		$this->assertEquals( 'post', $post->post_type, 'Post did not retain "post" post_type.' );
+
+	}
+
+	/**
+	 * Test "post" -> "page" in convert workflow
+	 */
+	function test_convert_post_type_post_to_page() {
+
+		$post = $this->factory->post->create_and_get(array(
+			'post_type' => 'post'
+		));
+
+		Post_Type_Converter::convert_post_type( $post, 'page' );
+
+		$post = get_post( $post->ID );
+
+		$this->assertEquals( 'page', $post->post_type, 'Post did not become "page" post_type.' );
 
 	}
 
