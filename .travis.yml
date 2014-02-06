@@ -19,8 +19,6 @@ env:
 before_script:
     - pear channel-discover pear.phpunit.de
     - pecl install phpunit/test_helpers
-    - echo 'zend_extension="test_helpers.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    - php -i
     - bash bin/install-wp-tests.sh wordpress_test travis '' localhost $WP_VERSION 
 
 script: phpunit
