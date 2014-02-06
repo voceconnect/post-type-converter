@@ -1,9 +1,9 @@
 === Post Type Converter ===
-Contributors: kevinlangleyjr
+Contributors: voceplatforms, kevinlangleyjr, jeffstieler
 Donate link: http://vocecommunications.com/
 Tags: converter, post type, custom post type, cpt
 Requires at least: 2.8
-Tested up to: 3.3
+Tested up to: 3.8.1
 Stable tag: trunk
 
 Allows you to convert the post type of objects while in the edit screen.
@@ -22,8 +22,11 @@ This section describes how to install the plugin and get it working.
 
 == Changelog ==
 
-= 0.1 =
-* First Version
+= 0.3 =
+* Added PHP Unit Tests
 
 = 0.2 =
 * Updating Readme and Plugin Info
+
+= 0.1 =
+* First Version
