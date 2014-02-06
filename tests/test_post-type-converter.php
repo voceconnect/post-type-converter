@@ -5,7 +5,7 @@
  *
  * @package wordpress-plugins-tests
  */
-class Test_Post_Type_Converter extends WP_UnitTestCase {
+class Test_Post_Type_Converter extends Voce_WP_UnitTestCase {
 
 	/**
 	 * If these tests are being run on Travis CI, verify that the version of
@@ -347,7 +347,7 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 
 		$post_id = $this->factory->post->create();
 
-		$_REQUEST['convert_post_type_nonce'] = 'badbadbadbad';
+		$_POST['convert_post_type_nonce'] = 'badbadbadbad';
 
 		$result  = Post_Type_Converter::save_convert( $post_id );
 
@@ -360,8 +360,8 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 	 */
 	function test_save_convert_good_nonce_bad_post_type() {
 
-		$_REQUEST['convert_post_type_nonce'] = wp_create_nonce( 'update_post_type_conversion' );
-		$_REQUEST['convert_post_type']       = 'bad_post_type';
+		$_POST['convert_post_type_nonce'] = wp_create_nonce( 'update_post_type_conversion' );
+		$_POST['convert_post_type']       = 'bad_post_type';
 
 		$post_id = $this->factory->post->create();
 
@@ -378,8 +378,8 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 	 */
 	function test_save_convert_valid_inputs() {
 
-		$_REQUEST['convert_post_type_nonce'] = wp_create_nonce( 'update_post_type_conversion' );
-		$_REQUEST['convert_post_type']       = 'page';
+		$_POST['convert_post_type_nonce'] = wp_create_nonce( 'update_post_type_conversion' );
+		$_POST['convert_post_type']       = 'page';
 
 		$post_id = $this->factory->post->create();
 
@@ -448,6 +448,80 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 			$content,
 			'Nonce not found in metabox output.'
 		);
+
+	}
+
+	/**
+	 * Helper to setup variables for check_bulk_convert() tests
+	 *
+	 * @global string $pagenow
+	 * @param string $form_field
+	 */
+	function _test_check_bulk_convert_setup( $form_field ) {
+
+		global $pagenow;
+
+		$pagenow = 'edit.php';
+
+		$_POST['post_type'] = 'page';
+
+		$posts = $this->factory->post->create_many( 2, array( 'post_type' => 'page' ) );
+
+		$_POST['post']      = $posts;
+
+		$_POST[$form_field] = 'post';
+
+	}
+
+	/**
+	 * Helper to run all assertions for check_bulk_convert() tests
+	 *
+	 * @global string $pagenow
+	 */
+	function _test_check_bulk_convert_assertions() {
+
+		global $pagenow;
+
+		foreach ( $_POST['post'] as $post_id ) {
+
+			$post = $this->factory->post->get_object_by_id( $post_id );
+
+			$this->assertEquals( 'post', $post->post_type );
+
+		}
+
+		$expected_redirect = add_query_arg( 'post_type', 'page', get_admin_url( null, $pagenow ) );
+
+		$this->assertTrue( $this->expected_wp_redirect( $expected_redirect ), 'Expected redirect to edit.php?post_type=page not found.' );
+
+		$this->assertTrue( $this->exit_called(), 'exit() was not called after wp_redirect().' );
+
+
+	}
+
+	/**
+	 * Test check_bulk_convert() with first form field
+	 */
+	function test_check_bulk_convert_input1() {
+
+		$this->_test_check_bulk_convert_setup( 'change_post_type' );
+
+		Post_Type_Converter::check_bulk_convert();
+
+		$this->_test_check_bulk_convert_assertions();
+
+	}
+
+	/**
+	 * Test check_bulk_convert() with second form field
+	 */
+	function test_check_bulk_convert_input2() {
+
+		$this->_test_check_bulk_convert_setup( 'change_post_type2' );
+
+		Post_Type_Converter::check_bulk_convert();
+
+		$this->_test_check_bulk_convert_assertions();
 
 	}
 
