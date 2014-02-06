@@ -373,5 +373,23 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Ensure that save_convert() actually converts post type will all good inputs
+	 */
+	function test_save_convert_valid_inputs() {
+
+		$_REQUEST['convert_post_type_nonce'] = wp_create_nonce( 'update_post_type_conversion' );
+		$_REQUEST['convert_post_type']       = 'page';
+
+		$post_id = $this->factory->post->create();
+
+		Post_Type_Converter::save_convert( $post_id );
+
+		$post = $this->factory->post->get_object_by_id( $post_id );
+
+		$this->assertEquals( 'page', $post->post_type, 'Post was *not* converted to "page" through save_convert().' );
+
+	}
+
 
 }
