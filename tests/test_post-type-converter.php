@@ -20,9 +20,9 @@ class Test_Post_Type_Converter extends Voce_WP_UnitTestCase {
 
 		$requested_version = getenv( 'WP_VERSION' ) . '-src';
 
-		// The "master" version requires special handling.
-		if ( $requested_version == 'master-src' ) {
-			$file = file_get_contents( 'https://raw.github.com/tierra/wordpress/master/src/wp-includes/version.php' );
+		// The "trunk" version requires special handling.
+		if ( $requested_version == 'trunk-src' ) {
+			$file = file_get_contents( 'https://core.trac.wordpress.org/browser/trunk/src/wp-includes/version.php?format=txt' );
 			preg_match( '#\$wp_version = \'([^\']+)\';#', $file, $matches );
 			$requested_version = $matches[1];
 		}
