@@ -340,4 +340,19 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Ensure save_convert() returns null when the nonce is invalid
+	 */
+	function test_save_convert_bad_nonce() {
+
+		$post_id = $this->factory->post->create();
+
+		$_REQUEST['convert_post_type_nonce'] = 'badbadbadbad';
+
+		$result  = Post_Type_Converter::save_convert( $post_id );
+
+		$this->assertNull( $result, 'save_convert() should return null when the nonce is invalid.' );
+
+	}
+
 }
