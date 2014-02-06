@@ -355,4 +355,23 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Ensure that bad post types are caught by save_convert()
+	 */
+	function test_save_convert_good_nonce_bad_post_type() {
+
+		$_REQUEST['convert_post_type_nonce'] = wp_create_nonce( 'update_post_type_conversion' );
+		$_REQUEST['convert_post_type']       = 'bad_post_type';
+
+		$post_id = $this->factory->post->create();
+
+		Post_Type_Converter::save_convert( $post_id );
+
+		$post = $this->factory->post->get_object_by_id( $post_id );
+
+		$this->assertEquals( 'post', $post->post_type, 'Post was converted to invalid post type through save_convert().' );
+
+	}
+
+
 }
