@@ -18,10 +18,10 @@ class Test_Post_Type_Converter extends Voce_WP_UnitTestCase {
 		if ( !getenv( 'TRAVIS' ) )
 			$this->markTestSkipped( 'Test skipped since Travis CI was not detected.' );
 
-		$requested_version = getenv( 'WP_VERSION' ) . '-src';
+		$requested_version = getenv( 'WP_VERSION' );
 
-		// The "trunk" version requires special handling.
-		if ( $requested_version == 'trunk-src' ) {
+		// The "latest" version requires special handling.
+		if ( 'latest' === $requested_version ) {
 			$file = file_get_contents( 'https://core.trac.wordpress.org/browser/trunk/src/wp-includes/version.php?format=txt' );
 			preg_match( '#\$wp_version = \'([^\']+)\';#', $file, $matches );
 			$requested_version = $matches[1];
