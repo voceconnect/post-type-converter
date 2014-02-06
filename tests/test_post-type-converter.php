@@ -327,4 +327,17 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Ensure save_convert() returns null when no nonce is present
+	 */
+	function test_save_convert_no_nonce() {
+
+		$post_id = $this->factory->post->create();
+
+		$result  = Post_Type_Converter::save_convert( $post_id );
+
+		$this->assertNull( $result, 'save_convert() should return null when no nonce present.' );
+
+	}
+
 }
