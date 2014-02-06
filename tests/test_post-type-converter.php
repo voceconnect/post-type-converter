@@ -391,5 +391,64 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Ensure that the correct HTML is generated for the metabox
+	 */
+	function test_convert_meta_box_content() {
+
+		$post = $this->factory->post->create_and_get( array( 'post_type' => 'page' ) );
+
+		ob_start();
+
+		Post_Type_Converter::convert_meta_box_content( $post );
+
+		$content = ob_get_clean();
+
+		// test for dropdown with correct id/name, and only options as children
+		$this->assertTag(
+			array(
+				'id' => 'convert_post_type',
+				'tag' => 'select',
+				'attributes' => array(
+					'name' => 'convert_post_type'
+				),
+				'children' => array(
+					'only' => array(
+						'tag' => 'option'
+					)
+				)
+			),
+			$content,
+			'No <select> element found with correct id and name attributes.'
+		);
+
+		// test that correct dropdown option is selected
+		$this->assertTag(
+			array(
+				'tag' => 'option',
+				'attributes' => array(
+					'value' => $post->post_type,
+					'selected' => 'selected'
+				)
+			),
+			$content,
+			'Option containing passed in post_type not selected.'
+		);
+
+		// test presence of hidden nonce input
+		$this->assertTag(
+			array(
+				'tag' => 'input',
+				'id' => 'convert_post_type_nonce',
+				'attributes' => array(
+					'type' => 'hidden',
+					'name' => 'convert_post_type_nonce'
+				)
+			),
+			$content,
+			'Nonce not found in metabox output.'
+		);
+
+	}
 
 }
