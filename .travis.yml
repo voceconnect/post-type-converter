@@ -16,9 +16,18 @@ env:
     # - WP_VERSION=3.5.1
     # - WP_VERSION=3.5
 
+install:
+    - mkdir ~/php-test-helpers/
+    - cd ~/php-test-helpers
+    - git clone https://github.com/php-test-helpers/php-test-helpers.git .
+    - phpize
+    - ./configure --enable-test-helpers
+    - make
+    - sudo make install
+    - cd -
+
 before_script:
-    - pear channel-discover pear.phpunit.de
-    - pecl install phpunit/test_helpers
+    - echo "zend_extension=$HOME/php-test-helpers/modules/test_helpers.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
     - bash bin/install-wp-tests.sh wordpress_test travis '' localhost $WP_VERSION 
 
 script: phpunit
