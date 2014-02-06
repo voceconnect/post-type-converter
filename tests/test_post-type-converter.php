@@ -266,7 +266,7 @@ class Test_Post_Type_Converter extends WP_UnitTestCase {
 
 		Post_Type_Converter::convert_post_type( $post, 'post' );
 
-		$post = get_post( $post->ID );
+		$post = $this->factory->post->get_object_by_id( $post->ID );
 
 		$this->assertEquals( 'post', $post->post_type, 'Post did not retain "post" post_type.' );
 
