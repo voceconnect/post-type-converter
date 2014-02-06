@@ -94,22 +94,22 @@ if(!class_exists('Post_Type_Converter')) {
 		public static function check_bulk_convert() {
 			global $pagenow;
 			
-			if($pagenow == 'edit.php' && isset($_REQUEST['post'])){
-				if(isset($_REQUEST['change_post_type']) && -1 != $_REQUEST['change_post_type'] ){
-					$new_post_type = $_REQUEST['change_post_type'];
-				} elseif(isset($_REQUEST['change_post_type2']) && -1 != $_REQUEST['change_post_type2'] ){
-					$new_post_type = $_REQUEST['change_post_type2'];
+			if($pagenow == 'edit.php' && isset($_POST['post'])){
+				if(isset($_POST['change_post_type']) && -1 != $_POST['change_post_type'] ){
+					$new_post_type = $_POST['change_post_type'];
+				} elseif(isset($_POST['change_post_type2']) && -1 != $_POST['change_post_type2'] ){
+					$new_post_type = $_POST['change_post_type2'];
 				}
 				if(isset($new_post_type)){
-					foreach($_REQUEST['post'] as $post_id){
+					foreach($_POST['post'] as $post_id){
 						$post = get_post($post_id);
 						self::convert_post_type($post, $new_post_type);
 					}
 					
 					$new_url = get_admin_url('', $pagenow);
 				
-					if($_REQUEST['post_type'] != 'post'){
-						$new_url = add_query_arg('post_type', $_REQUEST['post_type'], $new_url);
+					if($_POST['post_type'] != 'post'){
+						$new_url = add_query_arg('post_type', $_POST['post_type'], $new_url);
 					}
 
 					wp_redirect($new_url);
@@ -122,8 +122,8 @@ if(!class_exists('Post_Type_Converter')) {
 			if(wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) {
 				return $post_id;
 			}
-			if(isset($_REQUEST['convert_post_type_nonce']) && wp_verify_nonce($_REQUEST['convert_post_type_nonce'], 'update_post_type_conversion')) {
-				$new_post_type = $_REQUEST['convert_post_type'];
+			if(isset($_POST['convert_post_type_nonce']) && wp_verify_nonce($_POST['convert_post_type_nonce'], 'update_post_type_conversion')) {
+				$new_post_type = $_POST['convert_post_type'];
 				$post_types = self::get_post_types();
 				if(in_array($new_post_type, $post_types)){
 					self::convert_post_type(get_post($post_id), $new_post_type);
