@@ -33,12 +33,6 @@ class Voce_WP_UnitTestCase extends WP_UnitTestCase {
 
 		}
 
-		// undo any calls to set_current_screen() in tests
-		unset( $GLOBALS['current_screen'], $GLOBALS['taxnow'], $GLOBALS['typenow'] );
-
-		// undo any calls to wp_set_current_user()
-		unset( $GLOBALS['current_user'] );
-
 	}
 
 	static function wp_redirect( $location, $status ) {
