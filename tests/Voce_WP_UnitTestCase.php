@@ -27,6 +27,12 @@ class Voce_WP_UnitTestCase extends WP_UnitTestCase {
 
 		$this->exit_called       = false;
 
+		if ( function_exists( 'unset_exit_overload' ) ) {
+
+			unset_exit_overload();
+
+		}
+
 	}
 
 	static function wp_redirect( $location, $status ) {
