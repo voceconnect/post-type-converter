@@ -4,7 +4,7 @@ Donate link: http://voceplatforms.com/
 Tags: converter, post type, custom post type, cpt
 Requires at least: 2.8
 Tested up to: 3.8.1
-Stable tag: trunk
+Stable tag: 0.3
 
 Allows you to convert the post type of objects while in the edit screen.
 
