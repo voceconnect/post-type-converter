@@ -117,16 +117,19 @@ if(!class_exists('Post_Type_Converter')) {
 
 		public static function convert_post_type($post, $new_post_type) {
 			if($post->post_type != $new_post_type){
+				$original_post = $post;
 				$categories = get_the_terms($post->ID, 'category');
 				$cat_array = array();
 				if($categories) {
-					foreach($categories as $cagtegory){
-						$cat_array[] =  $cagtegory->term_id;
+					foreach($categories as $category){
+						$cat_array[] =  $category->term_id;
 					}
 				}
 				$post->post_type = $new_post_type;
 				$post->post_category = $cat_array;
-				wp_insert_post($post);
+				$post->post_parent = 0;
+				wp_insert_post(apply_filters('convert_post_type-insert_post', $post, $new_post_type, $original_post));
+				do_action('convert_post_type', $post, $new_post_type);
 			}
 			return;
 		}
