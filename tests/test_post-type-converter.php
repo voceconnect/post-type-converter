@@ -362,10 +362,10 @@ class Test_Post_Type_Converter extends Voce_WP_UnitTestCase {
 	 */
 	function test_save_convert_good_nonce_bad_post_type() {
 
-		$_POST['convert_post_type_nonce'] = wp_create_nonce( 'update_post_type_conversion' );
-		$_POST['convert_post_type']       = 'bad_post_type';
-
 		$post_id = $this->factory->post->create();
+
+		$_POST['convert_post_type_nonce'] = wp_create_nonce( "update_post_type_conversion_{$post_id}" );
+		$_POST['convert_post_type']       = 'bad_post_type';
 
 		Post_Type_Converter::save_convert( $post_id );
 
