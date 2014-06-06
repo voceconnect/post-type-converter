@@ -394,6 +394,46 @@ class Test_Post_Type_Converter extends Voce_WP_UnitTestCase {
 	}
 
 	/**
+	 * Ensure that save_convert() actually only converts child post and not others saved in the request
+	 */
+	function test_save_convert_child_post() {
+
+		$post_id_1 = $this->factory->post->create();
+		$post_id_2 = $this->factory->post->create( array( 'post_parent' => $post_id_1 ) );
+
+		$_POST['convert_post_type_nonce'] = wp_create_nonce( "update_post_type_conversion_{$post_id_2}" );
+		$_POST['convert_post_type']       = 'page';
+
+		Post_Type_Converter::save_convert( $post_id_2 );
+
+		$post_1 = $this->factory->post->get_object_by_id( $post_id_1 );
+		$post_2 = $this->factory->post->get_object_by_id( $post_id_2 );
+
+		$this->assertEquals( 'post', $post_1->post_type, 'Parent post was *not* converted to "page" through save_convert().' );
+		$this->assertEquals( 'page', $post_2->post_type, 'Child post was *not* converted to "page" through save_convert().' );
+
+	}
+
+	/**
+	 * Ensure that save_convert() actually only converts parent post and not others saved in the request
+	 */
+	function test_save_convert_parent_post_not_child() {
+
+		$post_id_1 = $this->factory->post->create();
+		$post_id_2 = $this->factory->post->create( array( 'post_parent' => $post_id_1 ) );
+
+		$_POST['convert_post_type_nonce'] = wp_create_nonce( "update_post_type_conversion_{$post_id_1}" );
+		$_POST['convert_post_type']       = 'page';
+
+		Post_Type_Converter::save_convert( $post_id_2 );
+
+		$post_1 = $this->factory->post->get_object_by_id( $post_id_1 );
+		$post_2 = $this->factory->post->get_object_by_id( $post_id_2 );
+
+		$this->assertEquals( 'post', $post_2->post_type, 'Child post was converted to "page" through save_convert().' );
+	}
+
+	/**
 	 * Ensure that the correct HTML is generated for the metabox
 	 */
 	function test_convert_meta_box_content() {
