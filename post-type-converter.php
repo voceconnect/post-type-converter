@@ -72,7 +72,7 @@ if(!class_exists('Post_Type_Converter')) {
 				echo '<option value="'.$single_post_type.'"  '.selected($post->post_type, $single_post_type).'>'.get_post_type_object($single_post_type)->labels->singular_name.'</option>';
 			}
 			echo '</select>';
-			wp_nonce_field('update_post_type_conversion', 'convert_post_type_nonce');
+			wp_nonce_field( "update_post_type_conversion_{$post->ID}", 'convert_post_type_nonce');
 		}
 
 		public static function check_bulk_convert() {
@@ -106,7 +106,7 @@ if(!class_exists('Post_Type_Converter')) {
 			if(wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) {
 				return $post_id;
 			}
-			if(isset($_POST['convert_post_type_nonce']) && wp_verify_nonce($_POST['convert_post_type_nonce'], 'update_post_type_conversion')) {
+			if(isset($_POST['convert_post_type_nonce']) && wp_verify_nonce($_POST['convert_post_type_nonce'], "update_post_type_conversion_{$post_id}")) {
 				$new_post_type = $_POST['convert_post_type'];
 				$post_types = self::get_post_types();
 				if(in_array($new_post_type, $post_types)){
