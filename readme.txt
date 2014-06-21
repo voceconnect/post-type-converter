@@ -4,7 +4,7 @@ Donate link: http://voceplatforms.com/
 Tags: converter, post type, custom post type, cpt
 Requires at least: 2.8
 Tested up to: 3.8.1
-Stable tag: 0.3
+Stable tag: 0.4
 
 Allows you to convert the post type of objects while in the edit screen.
 
@@ -21,6 +21,10 @@ This section describes how to install the plugin and get it working.
 3. For each Post Type, even custom, you will see a new meta box on the top right corner of the edit screen so you can easily change the select box and click update.
 
 == Changelog ==
+
+= 0.4 =
+* Adding post id to nonce to make sure other posts saved during the request do not get converted.
+* Adding tests to verify child/parent posts are not modified within the same request.
 
 = 0.3 =
 * Added PHP Unit Tests

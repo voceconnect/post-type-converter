@@ -72,7 +72,7 @@ if(!class_exists('Post_Type_Converter')) {
 				echo '<option value="'.$single_post_type.'"  '.selected($post->post_type, $single_post_type).'>'.get_post_type_object($single_post_type)->labels->singular_name.'</option>';
 			}
 			echo '</select>';
-			wp_nonce_field('update_post_type_conversion', 'convert_post_type_nonce');
+			wp_nonce_field( "update_post_type_conversion_{$post->ID}", 'convert_post_type_nonce');
 		}
 
 		public static function check_bulk_convert() {
@@ -106,7 +106,7 @@ if(!class_exists('Post_Type_Converter')) {
 			if(wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) {
 				return $post_id;
 			}
-			if(isset($_POST['convert_post_type_nonce']) && wp_verify_nonce($_POST['convert_post_type_nonce'], 'update_post_type_conversion')) {
+			if(isset($_POST['convert_post_type_nonce']) && wp_verify_nonce($_POST['convert_post_type_nonce'], "update_post_type_conversion_{$post_id}")) {
 				$new_post_type = $_POST['convert_post_type'];
 				$post_types = self::get_post_types();
 				if(in_array($new_post_type, $post_types)){
@@ -117,16 +117,19 @@ if(!class_exists('Post_Type_Converter')) {
 
 		public static function convert_post_type($post, $new_post_type) {
 			if($post->post_type != $new_post_type){
+				$original_post = $post;
 				$categories = get_the_terms($post->ID, 'category');
 				$cat_array = array();
 				if($categories) {
-					foreach($categories as $cagtegory){
-						$cat_array[] =  $cagtegory->term_id;
+					foreach($categories as $category){
+						$cat_array[] =  $category->term_id;
 					}
 				}
 				$post->post_type = $new_post_type;
 				$post->post_category = $cat_array;
-				wp_insert_post($post);
+				$post->post_parent = 0;
+				wp_insert_post(apply_filters('convert_post_type-insert_post', $post, $new_post_type, $original_post));
+				do_action('convert_post_type', $post, $new_post_type);
 			}
 			return;
 		}
