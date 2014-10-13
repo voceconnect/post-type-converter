@@ -78,22 +78,22 @@ if(!class_exists('Post_Type_Converter')) {
 		public static function check_bulk_convert() {
 			global $pagenow;
 
-			if($pagenow == 'edit.php' && isset($_POST['post'])){
-				if(isset($_POST['change_post_type']) && -1 != $_POST['change_post_type'] ){
-					$new_post_type = $_POST['change_post_type'];
-				} elseif(isset($_POST['change_post_type2']) && -1 != $_POST['change_post_type2'] ){
-					$new_post_type = $_POST['change_post_type2'];
+			if($pagenow == 'edit.php' && isset($_GET['post'])){
+				if(isset($_GET['change_post_type']) && -1 != $_GET['change_post_type'] ){
+					$new_post_type = $_GET['change_post_type'];
+				} elseif(isset($_GET['change_post_type2']) && -1 != $_GET['change_post_type2'] ){
+					$new_post_type = $_GET['change_post_type2'];
 				}
 				if(isset($new_post_type)){
-					foreach($_POST['post'] as $post_id){
+					foreach($_GET['post'] as $post_id){
 						$post = get_post($post_id);
 						self::convert_post_type($post, $new_post_type);
 					}
 
 					$new_url = get_admin_url('', $pagenow);
 
-					if($_POST['post_type'] != 'post'){
-						$new_url = add_query_arg('post_type', $_POST['post_type'], $new_url);
+					if($_GET['post_type'] != 'post'){
+						$new_url = add_query_arg('post_type', $_GET['post_type'], $new_url);
 					}
 
 					wp_redirect($new_url);
