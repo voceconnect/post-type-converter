@@ -460,6 +460,7 @@ class Test_Post_Type_Converter extends Voce_WP_UnitTestCase {
 		$this->assertEquals( 'convert_post_type', $selectName );
 
 		// Ensure all select children are options
+		$selectedOption = NULL;
 		$selectChildren = $select->childNodes;
 		for ( $i=0; $i < $selectChildren->length; $i++ ) {
 			$child = $selectChildren->item($i);
