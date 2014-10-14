@@ -453,15 +453,21 @@ class Test_Post_Type_Converter extends Voce_WP_UnitTestCase {
 
 		// Check select field
 		$select = $document->getElementById( 'convert_post_type' );
+		$this->assertInstanceOf( 'DOMElement', $select );
 		$this->assertEquals( 'select', $select->tagName );
 
 		// Check select name att
 		$selectName = $select->getAttribute( 'name' );
 		$this->assertEquals( 'convert_post_type', $selectName );
 
-		// Ensure all select children are options
-		$selectedOption = NULL;
+		// Check select has children
 		$selectChildren = $select->childNodes;
+		$this->assertInstanceOf( 'DOMNodeList', $selectChildren );
+		$this->assertGreaterThan( 0, $selectChildren->length );
+
+		$selectedOption = NULL;
+
+		// Ensure all child elements are options
 		for ( $i=0; $i < $selectChildren->length; $i++ ) {
 			$child = $selectChildren->item($i);
 			if ( $child instanceof DOMElement ) {
@@ -473,8 +479,16 @@ class Test_Post_Type_Converter extends Voce_WP_UnitTestCase {
 			}
 		}
 
+		// Ensure a selected option is present
+		$this->assertNotNull( $selectedOption );
+
+		// Check correct post type is selected
+		$selectedValue = $selectedOption->getAttribute( 'value' );
+		$this->assertEquals( $post->post_type, $selectedValue );
+
 		// Check nonce field
 		$nonce = $document->getElementById( 'convert_post_type_nonce' );
+		$this->assertInstanceOf( 'DOMElement', $nonce );
 		$this->assertEquals( 'input', $nonce->tagName );
 
 		// Check nonce name att
@@ -484,10 +498,6 @@ class Test_Post_Type_Converter extends Voce_WP_UnitTestCase {
 		// Check nonce type
 		$nonceType = $nonce->getAttribute( 'type' );
 		$this->assertEquals( 'hidden', $nonceType );
-
-		// Check correct post type is selected
-		$selectedValue = $selectedOption->getAttribute( 'value' );
-		$this->assertEquals( $post->post_type, $selectedValue );
 
 	}
 
