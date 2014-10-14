@@ -505,13 +505,13 @@ class Test_Post_Type_Converter extends Voce_WP_UnitTestCase {
 
 		$pagenow = 'edit.php';
 
-		$_POST['post_type'] = 'page';
+		$_GET['post_type'] = 'page';
 
 		$posts = $this->factory->post->create_many( 2, array( 'post_type' => 'page' ) );
 
-		$_POST['post']      = $posts;
+		$_GET['post']      = $posts;
 
-		$_POST[$form_field] = 'post';
+		$_GET[$form_field] = 'post';
 
 	}
 
@@ -524,7 +524,7 @@ class Test_Post_Type_Converter extends Voce_WP_UnitTestCase {
 
 		global $pagenow;
 
-		foreach ( $_POST['post'] as $post_id ) {
+		foreach ( $_GET['post'] as $post_id ) {
 
 			$post = $this->factory->post->get_object_by_id( $post_id );
 
