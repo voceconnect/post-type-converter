@@ -46,7 +46,7 @@ if(!class_exists('Post_Type_Converter')) {
 
 				$script_vars = self::get_script_vars();
 
-				wp_enqueue_script('post-type-converter', trailingslashit(plugins_url()).trailingslashit(basename(dirname(__FILE__))).'js/post-type-converter.js', array('jquery'));
+				wp_enqueue_script('post-type-converter', plugins_url('js/post-type-converter.js', __FILE__), array('jquery'));
 				wp_localize_script('post-type-converter', 'script_vars', $script_vars);
 			}
 		}
