@@ -14,10 +14,6 @@ if(!class_exists('Post_Type_Converter')) {
 
 		public static function initialize() {
 			$cap = apply_filters( 'post_type_converter_capability', 'manage_options' );
-
-			if ( empty($cap) )
-				$cap = 'manage_options';
-
 			if ( current_user_can( $cap ) ){
 				add_action('add_meta_boxes', array(__CLASS__, 'add_convert_meta_box'), 20);;
 				add_action('save_post', array(__CLASS__, 'save_convert'));
