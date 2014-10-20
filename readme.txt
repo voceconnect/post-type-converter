@@ -2,7 +2,7 @@
 Contributors: voceplatforms, kevinlangleyjr, jeffstieler
 Donate link: http://voceplatforms.com/
 Tags: converter, post type, custom post type, cpt
-Requires at least: 2.8
+Requires at least: 3.7.4
 Tested up to: 4.0
 Stable tag: 0.5
 License: GPLv2 or later
