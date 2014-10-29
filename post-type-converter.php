@@ -4,7 +4,7 @@ Plugin Name: Post Type Converter
 Plugin URI: https://github.com/voceconnect/post-type-converter
 Description: Gives a qualified user the ability to convert a post from one post_type to another public post_type.
 Author: Voce Communications - Kevin Langley
-Version: 0.4.1
+Version: 0.5
 Author URI: http://voceplatforms.com
 */
 
@@ -13,7 +13,8 @@ if(!class_exists('Post_Type_Converter')) {
 	class Post_Type_Converter {
 
 		public static function initialize() {
-			if ( current_user_can('manage_options') ){
+			$cap = apply_filters( 'post_type_converter_capability', 'manage_options' );
+			if ( current_user_can( $cap ) ){
 				add_action('add_meta_boxes', array(__CLASS__, 'add_convert_meta_box'), 20);;
 				add_action('save_post', array(__CLASS__, 'save_convert'));
 				add_action('admin_enqueue_scripts', array(__CLASS__, 'add_bulk_edit_js'));
@@ -45,7 +46,7 @@ if(!class_exists('Post_Type_Converter')) {
 
 				$script_vars = self::get_script_vars();
 
-				wp_enqueue_script('post-type-converter', trailingslashit(plugins_url()).trailingslashit(basename(dirname(__FILE__))).'js/post-type-converter.js', array('jquery'));
+				wp_enqueue_script('post-type-converter', plugins_url('js/post-type-converter.js', __FILE__), array('jquery'));
 				wp_localize_script('post-type-converter', 'script_vars', $script_vars);
 			}
 		}
@@ -78,22 +79,22 @@ if(!class_exists('Post_Type_Converter')) {
 		public static function check_bulk_convert() {
 			global $pagenow;
 
-			if($pagenow == 'edit.php' && isset($_POST['post'])){
-				if(isset($_POST['change_post_type']) && -1 != $_POST['change_post_type'] ){
-					$new_post_type = $_POST['change_post_type'];
-				} elseif(isset($_POST['change_post_type2']) && -1 != $_POST['change_post_type2'] ){
-					$new_post_type = $_POST['change_post_type2'];
+			if($pagenow == 'edit.php' && isset($_GET['post'])){
+				if(isset($_GET['change_post_type']) && -1 != $_GET['change_post_type'] ){
+					$new_post_type = $_GET['change_post_type'];
+				} elseif(isset($_GET['change_post_type2']) && -1 != $_GET['change_post_type2'] ){
+					$new_post_type = $_GET['change_post_type2'];
 				}
 				if(isset($new_post_type)){
-					foreach($_POST['post'] as $post_id){
+					foreach($_GET['post'] as $post_id){
 						$post = get_post($post_id);
 						self::convert_post_type($post, $new_post_type);
 					}
 
 					$new_url = get_admin_url('', $pagenow);
 
-					if($_POST['post_type'] != 'post'){
-						$new_url = add_query_arg('post_type', $_POST['post_type'], $new_url);
+					if($_GET['post_type'] != 'post'){
+						$new_url = add_query_arg('post_type', $_GET['post_type'], $new_url);
 					}
 
 					wp_redirect($new_url);

@@ -1,20 +1,15 @@
 language: php
 
 php:
+    - 5.2
     - 5.3
     - 5.4
 
 env:
     - WP_VERSION=latest
-    - WP_VERSION=3.8.1
-    - WP_VERSION=3.8
-    - WP_VERSION=3.7.1
-    - WP_VERSION=3.7
-    - WP_VERSION=3.6.1
-    - WP_VERSION=3.6
-    - WP_VERSION=3.5.2
-    - WP_VERSION=3.5.1
-    - WP_VERSION=3.5
+    - WP_VERSION=3.9.2
+    - WP_VERSION=3.8.4
+    - WP_VERSION=3.7.4
 
 install:
     - mkdir ~/php-test-helpers/
@@ -28,6 +23,6 @@ install:
 
 before_script:
     - echo "zend_extension=$HOME/php-test-helpers/modules/test_helpers.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
-    - bash bin/install-wp-tests.sh wordpress_test travis '' localhost $WP_VERSION 
+    - bash bin/install-wp-tests.sh wordpress_test travis '' localhost $WP_VERSION
 
 script: phpunit

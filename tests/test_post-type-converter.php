@@ -446,50 +446,58 @@ class Test_Post_Type_Converter extends Voce_WP_UnitTestCase {
 
 		$content = ob_get_clean();
 
-		// test for dropdown with correct id/name, and only options as children
-		$this->assertTag(
-			array(
-				'id' => 'convert_post_type',
-				'tag' => 'select',
-				'attributes' => array(
-					'name' => 'convert_post_type'
-				),
-				'children' => array(
-					'only' => array(
-						'tag' => 'option'
-					)
-				)
-			),
-			$content,
-			'No <select> element found with correct id and name attributes.'
-		);
+		// Parse $content HTML
+		$document = new DOMDocument;
+		$document->preserveWhiteSpace = false;
+		$document->loadHTML($content);
 
-		// test that correct dropdown option is selected
-		$this->assertTag(
-			array(
-				'tag' => 'option',
-				'attributes' => array(
-					'value' => $post->post_type,
-					'selected' => 'selected'
-				)
-			),
-			$content,
-			'Option containing passed in post_type not selected.'
-		);
+		// Check select field
+		$select = $document->getElementById( 'convert_post_type' );
+		$this->assertInstanceOf( 'DOMElement', $select );
+		$this->assertEquals( 'select', $select->tagName );
 
-		// test presence of hidden nonce input
-		$this->assertTag(
-			array(
-				'tag' => 'input',
-				'id' => 'convert_post_type_nonce',
-				'attributes' => array(
-					'type' => 'hidden',
-					'name' => 'convert_post_type_nonce'
-				)
-			),
-			$content,
-			'Nonce not found in metabox output.'
-		);
+		// Check select name att
+		$selectName = $select->getAttribute( 'name' );
+		$this->assertEquals( 'convert_post_type', $selectName );
+
+		// Check select has children
+		$selectChildren = $select->childNodes;
+		$this->assertInstanceOf( 'DOMNodeList', $selectChildren );
+		$this->assertGreaterThan( 0, $selectChildren->length );
+
+		$selectedOption = NULL;
+
+		// Ensure all child elements are options
+		for ( $i=0; $i < $selectChildren->length; $i++ ) {
+			$child = $selectChildren->item($i);
+			if ( $child instanceof DOMElement ) {
+				$this->assertEquals( 'option', $child->tagName );
+
+				// Save the selected option to do further checks later
+				if ( $child->getAttribute('selected') === 'selected' )
+					$selectedOption = $child;
+			}
+		}
+
+		// Ensure a selected option is present
+		$this->assertNotNull( $selectedOption );
+
+		// Check correct post type is selected
+		$selectedValue = $selectedOption->getAttribute( 'value' );
+		$this->assertEquals( $post->post_type, $selectedValue );
+
+		// Check nonce field
+		$nonce = $document->getElementById( 'convert_post_type_nonce' );
+		$this->assertInstanceOf( 'DOMElement', $nonce );
+		$this->assertEquals( 'input', $nonce->tagName );
+
+		// Check nonce name att
+		$nonceName = $nonce->getAttribute( 'name' );
+		$this->assertEquals( 'convert_post_type_nonce', $nonceName );
+
+		// Check nonce type
+		$nonceType = $nonce->getAttribute( 'type' );
+		$this->assertEquals( 'hidden', $nonceType );
 
 	}
 
@@ -505,13 +513,13 @@ class Test_Post_Type_Converter extends Voce_WP_UnitTestCase {
 
 		$pagenow = 'edit.php';
 
-		$_POST['post_type'] = 'page';
+		$_GET['post_type'] = 'page';
 
 		$posts = $this->factory->post->create_many( 2, array( 'post_type' => 'page' ) );
 
-		$_POST['post']      = $posts;
+		$_GET['post']      = $posts;
 
-		$_POST[$form_field] = 'post';
+		$_GET[$form_field] = 'post';
 
 	}
 
@@ -524,7 +532,7 @@ class Test_Post_Type_Converter extends Voce_WP_UnitTestCase {
 
 		global $pagenow;
 
-		foreach ( $_POST['post'] as $post_id ) {
+		foreach ( $_GET['post'] as $post_id ) {
 
 			$post = $this->factory->post->get_object_by_id( $post_id );
 

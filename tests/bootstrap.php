@@ -7,7 +7,7 @@ $GLOBALS['wp_tests_options'] = array(
 	'active_plugins' => array( 'post-type-converter/post-type-converter.php' ),
 );
 
-require_once __DIR__ . '/pluggable.php';
+require_once dirname( __FILE__ ) . '/pluggable.php';
 
 require_once $_tests_dir . '/includes/functions.php';
 
@@ -18,4 +18,4 @@ tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
 require $_tests_dir . '/includes/bootstrap.php';
 
-require_once __DIR__ . '/Voce_WP_UnitTestCase.php';
+require_once dirname( __FILE__ ) . '/Voce_WP_UnitTestCase.php';
