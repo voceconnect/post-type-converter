@@ -4,7 +4,7 @@ Plugin Name: Post Type Converter
 Plugin URI: https://github.com/voceconnect/post-type-converter
 Description: Gives a qualified user the ability to convert a post from one post_type to another public post_type.
 Author: Voce Communications - Kevin Langley
-Version: 0.5
+Version: 0.6
 Author URI: http://voceplatforms.com
 */
 
@@ -29,8 +29,14 @@ if(!class_exists('Post_Type_Converter')) {
 		}
 
 		public static function get_script_vars(){
+			$current_type = get_post_type();
 			$post_types = self::get_post_types();
 			$script_vars = array();
+
+			if ($current_type && isset($post_types[$current_type])){
+				unset($post_types[$current_type]);
+			}
+
 			foreach($post_types as $post_type){
 				$script_vars[$post_type] = get_post_type_object($post_type)->labels->singular_name;
 			}
