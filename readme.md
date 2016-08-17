@@ -1,3 +1,5 @@
+### Please note: This plugin is no longer being actively maintained or supported.
+
 Post Type Converter [![Build Status](https://travis-ci.org/voceconnect/post-type-converter.png?branch=master)](https://travis-ci.org/voceconnect/post-type-converter)
 ==================
 
